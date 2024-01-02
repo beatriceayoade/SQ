@@ -1,0 +1,42 @@
+--Top 10 customers.
+SELECT c.customer_id,
+first_name,
+last_name,
+COUNT(r.rental_id) AS rental_count
+From customer as c
+inner join rental as r
+on c.customer_id=r.customer_id
+group by c.customer_id
+order by rental_count desc 
+limit 10 ;
+
+--5 most rented movie
+SELECT f.film_id,title,
+COUNT(r.rental_id) AS rental_count
+FROM film as f
+join inventory as i on f.film_id=i.film_id
+join rental as r on i.inventory_id=r.inventory_id
+group by f.film_id
+order by rental_count DESC
+limit 5;
+
+--average rental per customer
+SELECT AVG(rental_count) AS average_rental
+FROM
+(Select C.customer_id, COUNT(r.rental_id) AS rental_count
+FROM customer as C
+LEFT JOIN rental as r ON c.customer_id=r.customer_id
+group by c.customer_id);
+
+--popular movie genre
+SELECT f.category_id,c.name AS genre,
+COUNT(r.rental_id) AS rental_count
+FROM film_category as f
+JOIN category as c ON f.category_id = c.category_id
+JOIN inventory i ON f.film_id = i.film_id
+JOIN rental r ON i.inventory_id = r.inventory_id
+GROUP BY f.category_id, c.name
+ORDER BY rental_count DESC
+LIMIT 1;
+
+--movie rental days
